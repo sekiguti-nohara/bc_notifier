@@ -1,6 +1,5 @@
 require "nokogiri"
 require "mechanize"
-require "pry"
 require "json"
 require 'date'
 require 'slack-notifier'
