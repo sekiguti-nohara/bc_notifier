@@ -40,12 +40,12 @@ agent.get(AIR_SHIFT_URL) do |page|
   #必要な情報だけを整形する
   staffs = hash_data["app"]["staffList"]["staff"]
   shifts = hash_data["app"]["monthlyshift"]["shift"]["shifts"]
-  today_bc_shifts = shifts.select { |shift| shift["date"] == (Date.today + 3).strftime("%Y%m%d") && shift["groupId"].to_i == 8375}
+  today_bc_shifts = shifts.select { |shift| shift["date"] == (Date.today).strftime("%Y%m%d") && shift["groupId"].to_i == 8375}
   today_bc_mentors = today_bc_shifts.map{ |shift| staffs.select { |staff| staff["id"] == shift["staffId"] }}
 
   #slackに投稿する
   notifier = Slack::Notifier.new(ENV["SLACK_POST_URL"])
-  notifier.ping("BC")
+  notifier.ping("BC") if today_bc_shifts.any?
   today_bc_mentors.zip(today_bc_shifts).each do |today_bc_mentor,shift|
     mention_id = slack_mension_name[today_bc_mentor[0]["name"]["family"] + today_bc_mentor[0]["name"]["first"]]
     start_hour = shift["workTime"]["text"][-13,2]
